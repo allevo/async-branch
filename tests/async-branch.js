@@ -37,6 +37,39 @@ describe('chain', function() {
         done()
       })
   })
+
+  it.only('fail', function(done) {
+    var expected = [
+      { key1: 4 },
+      { key1: 2 },
+    ]
+    var data = []
+
+    function func1(arr, callback) {
+      arr.push({ key1: 2 })
+      callback(null, arr)
+    }
+    function func2(arr, callback) {
+      callback(new Error('fail!'), arr)
+    }
+    function func3(arr, callback) {
+      throw new Error('Never call me!')
+    }
+
+    new asyncbranch.branch('branch name')
+      .do(func1)
+      .do(func2)
+      .do(func3)
+      .execute(data, function(err, result) {
+        assert.equal('object', typeof err)
+        assert.equal('Error', err.name)
+        assert.equal('fail!', err.message)
+
+        assert.deepEqual([ { key1: 2 } ], result)
+
+        done()
+      })
+  })
 })
 
 describe('branch', function() {
