@@ -211,3 +211,72 @@ describe('branch', function() {
     })
   })
 })
+
+describe('async integration', function() {
+
+  it('map', function(done) {
+    var data = [
+      { key1: 'pippo', key2: 'pluto' },
+      { key1: 'paperina', key2: 'paperino' },
+    ]
+    var expected = [
+      { second: 'pluto', length: 5 },
+      { second: 'paperino', length: 8 }
+    ]
+
+    function mapFunction(item, callback) {
+      callback(null, {
+        second: item.key2,
+        length: item.key1.length
+      })
+    }
+
+    new asyncbranch.branch('branch name')
+      .map(mapFunction)
+      .execute(data, function(err, data) {
+        assert.ifError(err)
+        assert.deepEqual(expected, data)
+
+        done()
+      })
+  })
+
+  describe('parallel', function() {
+    it('map', function(done) {
+      var data = [
+        { key1: 'pippo', key2: 'pluto' },
+        { key1: 'paperina', key2: 'paperino' },
+      ]
+      var expected = {
+        data1: [
+          { second: 'pluto', length: 5 },
+          { second: 'paperino', length: 8 }
+        ],
+        data2: [
+          { second: 'pluto', length: 5 },
+          { second: 'paperino', length: 8 }
+        ],
+      }
+
+      function mapFunction(item, callback) {
+        callback(null, {
+          second: item.key2,
+          length: item.key1.length
+        })
+      }
+
+      var flow = new asyncbranch.branch('branch name')
+        .map(mapFunction)
+
+      async.parallel({
+        data1: flow.execute.bind(flow, data),
+        data2: flow.execute.bind(flow, data),
+      }, function(err, data) {
+        assert.ifError(err)
+        assert.deepEqual(expected, data)
+
+        done()
+      })
+    })
+  })
+})
