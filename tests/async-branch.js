@@ -38,7 +38,7 @@ describe('chain', function() {
       })
   })
 
-  it.only('fail', function(done) {
+  it('fail', function(done) {
     var expected = [
       { key1: 4 },
       { key1: 2 },
@@ -209,6 +209,51 @@ describe('branch', function() {
         done()
       })
     })
+  })
+})
+
+describe('branch for item', function () {
+
+  it('simple', function(done) {
+    var data = [
+      { key1: 'pippo' },
+      { key1: 'pluto' },
+      { key1: 'paperina' },
+      { key1: 'paperino' },
+    ]
+    var expected = [
+      { key1: 'pippo', type: 'tooShort' },
+      { key1: 'pluto', type: 'tooShort' },
+      { key1: 'paperina', type: 'tooLong' },
+      { key1: 'paperino', type: 'tooLong' }
+    ]
+
+    var tooLongFunction = function tooLongFunction(item, next) {
+      item.type = 'tooLong'
+      next(null, item)
+    }
+    var tooShortFunction = function tooLongFunction(item, next) {
+      item.type = 'tooShort'
+      next(null, item)
+    }
+
+    var tooLongBranch = new asyncbranch.branch('tooLongBranch')
+      .map(tooLongFunction)
+    var tooShortBranch = new asyncbranch.branch('tooShortBranch')
+      .map(tooShortFunction)
+
+    function branchFunction(item, callback) {
+      callback(null, (item.key1.length > 6) ? tooLongBranch : tooShortBranch)
+    }
+
+    new asyncbranch.branch('branch name')
+      .itemBranch(branchFunction)
+      .execute(data, function(err, data) {
+        assert.ifError(err)
+        assert.deepEqual(expected, data)
+
+        done()
+      })
   })
 })
 
