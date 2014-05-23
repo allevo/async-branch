@@ -1,0 +1,26 @@
+{
+  "name": "async-branch",
+  "version": "0.0.1",
+  "description": "Wrap async library to describe your flow through branches",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/allevo/async-branch.git"
+  },
+  "author": "allevo <tomallevi@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/allevo/async-branch/issues"
+  },
+  "homepage": "https://github.com/allevo/async-branch",
+  "dependencies": {
+    "async": "^0.9.0",
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^1.19.0"
+  }
+}
