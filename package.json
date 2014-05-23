@@ -1,6 +1,6 @@
 {
   "name": "async-branch",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Wrap async library to describe your flow through branches",
   "main": "lib/index.js",
   "scripts": {
