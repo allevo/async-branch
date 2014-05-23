@@ -4,7 +4,7 @@
   "description": "Wrap async library to describe your flow through branches",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/*.js -R list"
   },
   "repository": {
     "type": "git",
